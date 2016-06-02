@@ -1,0 +1,55 @@
+/*
+ * Ellipsoid vertex shader
+ * Compute vertex and normal using u-v's in gl_Vertex and gl_Normal
+ */
+
+// Send to fragment shader: position and normal (in eye coordinates)
+varying vec4 pos;
+varying vec3 norm;
+
+// Ellipsoid parameters
+uniform float ax, ay, az;
+
+// Position at (u,v) on an ellipsoid
+vec4 ellipsoidPosition(float u, float v)
+{
+    // ... (placeholder)
+    float x,y,z;
+    x = ax * cos(u) * cos(v);
+    y = ay * sin(u) * cos(v);
+    z = az * sin(v);
+    return vec4(x, y, z, 1);
+}
+
+// Normal vector at (u,v) on an ellipsoid
+vec3 ellipsoidNormal(float u, float v)
+{
+    // ... (placeholder)
+    float x,y,z;
+    x = ay * az * cos(u) * cos(v);
+    y = ax * az * sin(u) * cos(v);
+    z = ax * ay * sin(v);
+    return vec3(x, y, z);
+}
+
+void main()
+{
+    // ... (placeholder -- should compute position and normal)
+    float u1 = gl_Vertex[0];
+    float v1 = gl_Vertex[1];
+    vec4 my_Vertex = ellipsoidPosition(u1,v1);
+
+    float u2 = gl_Normal[0];
+    float v2 = gl_Normal[1];
+    vec3 my_Normal = ellipsoidNormal(u2,v2);
+    // ...
+
+    // For fragment shader
+    pos  = gl_ModelViewMatrix * my_Vertex;
+    norm = gl_NormalMatrix    * my_Normal;
+
+    // Use computed vertex position
+    gl_Position = gl_ModelViewProjectionMatrix * my_Vertex;
+    // Pass color to the fragment shader
+    gl_FrontColor = gl_Color;
+}
